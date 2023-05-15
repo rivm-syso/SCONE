@@ -1,6 +1,6 @@
 # SCONE
 
-This repository contains the code developed and used for the analysis of the SCONE study in the Netherlands, as described in "Contact patterns of frail and non-frail elderly persons in the Netherlands during the COVID-19 pandemic", by [Jantien A Backer](mailto:jantien.backer@rivm.nl), Jan van de Kassteele, Fatima El Fakiri, Niel Hens, and Jacco Wallinga, consisting of:
+This repository contains the code developed and used for the analysis of the SCONE study in the Netherlands, as described in ["Contact patterns of frail and non-frail elderly persons in the Netherlands during the COVID-19 pandemic"](https://www.medrxiv.org/content/10.1101/2023.05.09.23289550v1), by [Jantien A Backer](mailto:jantien.backer@rivm.nl), Jan van de Kassteele, Fatima El Fakiri, Niel Hens, and Jacco Wallinga, consisting of:
 
 * `scripts`: code for two scripts (data cleaning and analysis) and helper functions
 
