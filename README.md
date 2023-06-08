@@ -16,7 +16,7 @@ All code has been written in the programming language [R](https://www.r-project.
 
 ## Data
 
-The cleaned data is publicly available on [Zenodo](https://dx.doi.org/10.5281/zenodo.7649376) in the [socialcontactdata.org](https://www.socialcontactdata.org) format. You can either:
+The cleaned data is publicly available on [Zenodo](https://dx.doi.org/10.5281/zenodo.7649375) in the [socialcontactdata.org](https://www.socialcontactdata.org) format. You can either:
 
 * Download the data files from the repository and place them in the `data` folder, or
 
