@@ -400,7 +400,7 @@ log10min <- log10(min(contact_data$c_smt, na.rm = TRUE))
 
 ggplot(
     data = contact_data %>% 
-      mutate(frailty = factor(frailty, levels = c(TRUE, FALSE), labels = c("Frail participant", "Non-frail participant")),
+      mutate(frailty = factor(frailty, levels = c(TRUE, FALSE), labels = c("Participant with frailties", "Participant without frailties")),
              round = factor(round, labels = c("Survey period 1", "Survey period 2"))),
     mapping = aes(x = part_age_group, y = cnt_age_group, fill = c_smt)) +
   geom_tile() +
@@ -429,7 +429,7 @@ ggplot(
                cols = vars(round))
 
 ggsave(filename = paste0("./figures/Contacts_matrices.png"), bg = "white", height = 7, width = 5, dpi = 300)
-ggsave(filename = paste0("./figures/Fig3_Contacts_matrices.pdf"), bg = "white", height = 7, width = 5, dpi = 300)
+ggsave(filename = paste0("./figures/Fig3_Contacts_matrices_R1.pdf"), bg = "white", height = 7, width = 5, dpi = 300)
 
 
 ############# Check contacts of nursing home and migrant participants ##########
@@ -466,6 +466,7 @@ tmp_data %>%
             pred = mean(pred),
             pred_lower = mean(pred_lower),
             pred_upper = mean(pred_upper)) 
+
 
 tmp_data %>% 
   filter(cob == "other") %>% 

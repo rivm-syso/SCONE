@@ -24,24 +24,30 @@
 # round 2: 4 Oct - 8 Nov 2021
 
 # average number of contacts per day (including household members)
-comparison_data <- contacts %>% 
+
+SCONE1_comparison <- contacts %>% 
   full_join(participants) %>% 
   group_by(part_id, part_age, round) %>% 
   summarise(ncont = sum(!is.na(cnt_id))/length(unique(part_id))) %>% 
-  group_by(round) %>% 
-  summarise(n = n(),
-            age = mean(part_age),
-            ncont_mean = mean(ncont),
-            ncont_lower = quantile(ncont, probs = 0.025),
-            ncont_upper = quantile(ncont, probs = 0.975))
+  filter(round == 1) %>% 
+  ungroup %>% 
+  select(ncont) %>% 
+  basic_bootstrap()
 
-
-
+SCONE2_comparison <- contacts %>% 
+  full_join(participants) %>% 
+  group_by(part_id, part_age, round) %>% 
+  summarise(ncont = sum(!is.na(cnt_id))/length(unique(part_id))) %>% 
+  filter(round == 2) %>% 
+  ungroup %>% 
+  select(ncont) %>% 
+  basic_bootstrap()
 
 # Pienter 2 (2006/2007)
 
 P2_part <- read_csv("/rivm/s/backerj/PienterContact/socialcontactdata.org/Pienter2/2006_Pienter2_NL_participant_common.csv")
 P2_cont <- read_csv("/rivm/s/backerj/PienterContact/socialcontactdata.org/Pienter2/2006_Pienter2_NL_contact_common.csv")
+
 
 P2_comparison <- P2_cont %>% 
   full_join(P2_part) %>% 
@@ -49,12 +55,9 @@ P2_comparison <- P2_cont %>%
   summarise(ncont = sum(!is.na(cont_id))) %>% 
   ungroup() %>% 
   filter(part_age >= 70) %>% 
-  summarise(n = n(),
-            age = mean(part_age),
-            ncont_mean = mean(ncont),
-            ncont_lower = quantile(ncont, probs = 0.025),
-            ncont_upper = quantile(ncont, probs = 0.975))
-  
+  select(ncont) %>% 
+  basic_bootstrap()
+
 
 # Pienter 3 (2016/2017)
 
@@ -67,11 +70,8 @@ P3_comparison <- P3_cont %>%
   summarise(ncont = sum(!is.na(cont_id))) %>% 
   ungroup() %>% 
   filter(part_age >= 70) %>% 
-  summarise(n = n(),
-            age = mean(part_age),
-            ncont_mean = mean(ncont),
-            ncont_lower = quantile(ncont, probs = 0.025),
-            ncont_upper = quantile(ncont, probs = 0.975))
+  select(ncont) %>% 
+  basic_bootstrap()
 
 
 # Pico 4 (Feb 2021)
@@ -83,11 +83,8 @@ pico4_comparison <- pico4 %>%
   summarise(ncont = sum(!is.na(cnt_age))) %>% 
   ungroup() %>% 
   filter(part_age >= 70) %>% 
-  summarise(n = n(),
-            age = mean(part_age),
-            ncont_mean = mean(ncont),
-            ncont_lower = quantile(ncont, probs = 0.025),
-            ncont_upper = quantile(ncont, probs = 0.975))
+  select(ncont) %>% 
+  basic_bootstrap()
 
 
 # Pico 6 (Nov 2021)
@@ -99,11 +96,8 @@ pico6_comparison <- pico6 %>%
   summarise(ncont = sum(!is.na(cnt_age))) %>% 
   ungroup() %>% 
   filter(part_age >= 70) %>% 
-  summarise(n = n(),
-            age = mean(part_age),
-            ncont_mean = mean(ncont),
-            ncont_lower = quantile(ncont, probs = 0.025),
-            ncont_upper = quantile(ncont, probs = 0.975))
+  select(ncont) %>% 
+  basic_bootstrap()
 
 
 # CoMix
@@ -121,13 +115,9 @@ CoMix1_comparison <- CoMix_cont %>%
   group_by(part_id, part_age) %>% 
   summarise(ncont = sum(!is.na(cont_id))) %>% 
   ungroup() %>% 
-  filter(part_age >= 70) %>% 
-  summarise(n = n(),
-            age = mean(part_age),
-            ncont_mean = mean(ncont),
-            ncont_lower = quantile(ncont, probs = 0.025),
-            ncont_upper = quantile(ncont, probs = 0.975))
-
+  filter(part_age >= 70) %>%
+  select(ncont) %>% 
+  basic_bootstrap()
 
 # last 2 waves in September before round 2
 CoMix2_comparison <- CoMix_cont %>% 
@@ -138,15 +128,12 @@ CoMix2_comparison <- CoMix_cont %>%
   summarise(ncont = sum(!is.na(cont_id))) %>% 
   ungroup() %>% 
   filter(part_age >= 70) %>% 
-  summarise(n = n(),
-            age = mean(part_age),
-            ncont_mean = mean(ncont),
-            ncont_lower = quantile(ncont, probs = 0.025),
-            ncont_upper = quantile(ncont, probs = 0.975))
+  select(ncont) %>% 
+  basic_bootstrap()
 
 
-comparison_data <- bind_rows("SCONE1"= comparison_data %>% filter(round == "round 1"),
-                             "SCONE2"= comparison_data %>% filter(round == "round 2"),
+comparison_data <- bind_rows("SCONE1"= SCONE1_comparison,
+                             "SCONE2"= SCONE2_comparison,
                              "P2" = P2_comparison,
                              "P3" = P3_comparison,
                              "pico4" = pico4_comparison,
@@ -154,9 +141,9 @@ comparison_data <- bind_rows("SCONE1"= comparison_data %>% filter(round == "roun
                              "CoMix1" = CoMix1_comparison,
                              "CoMix2" = CoMix2_comparison,
                              .id = "survey") %>% 
-  select(-round) %>% 
-  mutate(ncont_full = paste0(sprintf("%0.1f", ncont_mean), " (", round(ncont_lower), " - ", round(ncont_upper), ")"))
-
+  pivot_wider(names_from = probs, values_from = ncont_bs, names_prefix = "ncont_bs_") %>% 
+  mutate(ncont_full = paste0(sprintf("%0.1f", ncont_bs_0.5), " (", sprintf("%0.1f", ncont_bs_0.025), " - ", sprintf("%0.1f", ncont_bs_0.975), ")"))
 
 saveRDS(comparison_data, file = "./results/contacts_comparison.rds")
+
 
