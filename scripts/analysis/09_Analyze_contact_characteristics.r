@@ -52,9 +52,11 @@ contacts %>%
               alpha = 1,
               y_position = c(1.01, 1.07, 1.01, 1.14),
               #extend_line = -0.01,
-              #vjust = 0.1,
-              tip_length = 0,
-              map_signif_level = c("***"=0.001, "**"=0.01, "*"=0.05, "." = 0.1, "ns" = 1)
+              vjust = 0.5,
+              tip_length = 0.01,
+              angle = 0.001,
+              textsize = 3,
+              map_signif_level = c("   ***" = 0.001, "  **" = 0.01, "  *" = 0.05, "  ns" = 1)
   ) +
   scale_x_discrete(breaks = c("TRUE.1", "FALSE.1", "TRUE.2", "FALSE.2"),
                    labels = c("Frail", "Non-frail", "Frail", "Non-frail")) +
@@ -62,7 +64,7 @@ contacts %>%
                      breaks = seq(0, 1, 0.25)) +
   scale_alpha_manual(values = c(0.5, 1)) +
   scale_fill_manual(values = color_palette[c(1,3)]) +
-  #coord_flip() +
+  coord_flip() +
   labs(x = "Participants",
        y = "Fraction of community contacts per participant",
        fill = "Survey period") +
@@ -73,11 +75,11 @@ contacts %>%
         axis.text.x = element_text(size = 8)) +
   guides(alpha = guide_none()) +
   facet_wrap(facets = vars(type),
-             nrow = 1)
+             ncol = 1)
 
-ggsave(filename = paste0("./figures/Contacts_type.png"), height = 5, width = 7, dpi = 300)
-ggsave(filename = paste0("./figures/Fig4_Contacts_type.pdf"), height = 5, width = 7, dpi = 300)
 
+ggsave(filename = paste0("./figures/Contacts_type.png"), height = 7, width = 7, dpi = 300)
+ggsave(filename = paste0("./figures/Fig4_Contacts_type_R2.pdf"), height = 7, width = 7, dpi = 300)
 
 
 ###### Contact locations #######################################################
@@ -121,15 +123,6 @@ ggsave(filename = paste0("./figures/Contacts_location.png"), bg = "white", heigh
 ggsave(filename = paste0("./figures/Fig5_Contacts_location.pdf"), bg = "white", height = 5, width = 7, dpi = 300)
 
 
-# plot_grid(pA + theme(axis.title.y = element_text(size = 9)),
-#           pB + theme(axis.title.y = element_text(size = 9)),
-#           nrow = 2,
-#           labels = c("A", "B"),
-#           rel_heights = c(3, 2))
-# 
-# ggsave(filename = paste0("./figures/Contact_characteristics_", today(), ".png"), height = 7, width = 7, dpi = 300, bg = "white")
-# 
-
 
 ###### Repeated community contacts #############################################
 
@@ -156,17 +149,21 @@ pA <- contacts %>%
               col = 1,
               alpha = 1,
               y_position = c(1.01, 1.07, 1.01, 1.14) - 0.15,
-              extend_line = -0.01,
-              tip_length = 0,
-              map_signif_level = c("***"=0.001, "**"=0.01, "*"=0.05, "ns" = 1)
+              #extend_line = -0.01,
+              vjust = 0.5,
+              tip_length = 0.01,
+              angle = 0.001,
+              textsize = 3,
+              map_signif_level = c("   ***" = 0.001, "  **" = 0.01, "  *" = 0.05, "  ns" = 1)
   ) +
   scale_x_discrete(breaks = c("TRUE.1", "FALSE.1", "TRUE.2", "FALSE.2"),
                    labels = c("Frail", "Non-frail", "Frail", "Non-frail")) +
   scale_y_continuous(limits = c(0, 1), 
-                     expand = expansion(mult = c(0, 0.06)),
+                     expand = expansion(mult = c(0, 0)),
                      breaks = seq(0, 0.99, 0.25)) +
   scale_alpha_manual(values = c(0.5, 1)) +
   scale_fill_manual(values = color_palette[c(1,3)]) +
+  coord_flip() +
   labs(x = "Participants",
        y = "Fraction of repeated community contacts per participant",
        fill = "Survey period") +
@@ -203,16 +200,20 @@ pB <- contacts %>%
               alpha = 1,
               y_position = c(1.01, 1.07, 1.01, 1.14) - 0.15,
               #extend_line = -0.01,
-              tip_length = 0,
-              map_signif_level = c("***"=0.001, "**"=0.01, "*"=0.05, "ns" = 1)
+              vjust = 0.5,
+              tip_length = 0.01,
+              angle = 0.001,
+              textsize = 3,
+              map_signif_level = c("   ***" = 0.001, "  **" = 0.01, "  *" = 0.05, "  ns" = 1)
   ) +
   scale_x_discrete(breaks = c("TRUE.1", "FALSE.1", "TRUE.2", "FALSE.2"),
                    labels = c("Living alone", "Living together", "Living alone", "Living together")) +
   scale_y_continuous(limits = c(0, 1),
-                     expand = expansion(mult = c(0, 0.06)),
+                     expand = expansion(mult = c(0, 0)),
                      breaks = seq(0, 0.99, 0.25)) +
   scale_alpha_manual(values = c(0.5, 1)) +
   scale_fill_manual(values = color_palette[c(1,3)]) +
+  coord_flip() +
   labs(x = "Participants",
        y = "Fraction of repeated community contacts per participant",
        fill = "Survey period   ") +
@@ -221,13 +222,16 @@ pB <- contacts %>%
         axis.text.x = element_text(size = 8)) +
   guides(alpha = guide_none())
 
-plot_grid(pA + labs(x = NULL, y = "Fraction of repeated community\ncontacts per participant") + guides(fill = guide_none()), 
-          pB + labs(y = "Fraction of repeated community\ncontacts per participant"),
+
+plot_grid(pA + labs(y = NULL) + guides(fill = guide_none()), 
+          pB ,
+          align = "v",
           nrow = 2,
           labels = c("A", "B"),
           rel_heights = c(4, 5))
 
 
-ggsave(filename = paste0("./figures/Contacts_repeated.png"), height = 7, width = 7, dpi = 300)
+
+ggsave(filename = paste0("./figures/Contacts_repeated.png"), height = 5, width = 7, dpi = 300)
 
 
