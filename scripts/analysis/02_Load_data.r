@@ -22,7 +22,7 @@
 ################################################################################
 
 local <- "./data/2021_SCONE_NL_"
-public <- "https://zenodo.org/record/7649375/files/2021_SCONE_NL_"
+public <- "https://zenodo.org/record/7751724/files/2021_SCONE_NL_"
 
 participants <- read_in(file = "participant_common.csv", local = local, public = public) %>% 
   full_join(read_in(file = "hh_common.csv", local = local, public = public)) %>% 
